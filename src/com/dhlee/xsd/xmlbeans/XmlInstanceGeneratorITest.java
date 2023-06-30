@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class XmlInstanceGeneratorITest {
@@ -24,13 +25,19 @@ public class XmlInstanceGeneratorITest {
                 "    </xs:complexType>\n" +
                 "  </xs:element>\n" +
                 "</xs:schema>";
+        String rootName = "root";
         
         try {
-			xsd = readClasspathFile("resources/iso20022.xsd");
+//			xsd = readClasspathFile("resources/iso20022.xsd");
+//        	rootName = "Document";
+        	
+			xsd = readFile("./xsd/sample.xsd");
+			rootName = "PurchaseOrder";
+			
 	        XmlInstanceGeneratorImpl generator = new XmlInstanceGeneratorImpl();
 	        
-	        String xml = generator.generateXmlInstance(xsd, "Document"); //root
-	        //System.out.println("XSD :\n" + xsd);
+	        String xml = generator.generateXmlInstance(xsd, rootName);
+	        System.out.println("XSD :\n" + xsd);
 	        System.out.println("XML :\n" + xml);
         } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -46,5 +53,16 @@ public class XmlInstanceGeneratorITest {
 
         // Convert the file bytes to a string using UTF-8 encoding
         return new String(fileBytes, StandardCharsets.UTF_8);
+    }
+	
+    public static String readFile(String filePath) {
+        String content = "";
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+            content = new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content;
     }
 }
