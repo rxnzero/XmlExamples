@@ -49,7 +49,7 @@ public class XmlValidator {
     }
         
     public static void testData() {
-        String xmlString = "<root><element>value</element><elementInt>10s</elementInt></root>";
+        String xmlString = "<root><element>value</element><elementInt>10s</elementInt><SSN>A23-12-1234</SSN></root>";
         String xsdString = "<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n" +
                 "    <xsd:element name=\"root\">\n" +
                 "        <xsd:complexType>\n" +
@@ -66,6 +66,13 @@ public class XmlValidator {
                 "            <xsd:sequence>\n" +
                 "                <xsd:element name=\"element\" type=\"xsd:string\"/>\n" +
                 "                <xsd:element name=\"elementInt\" type=\"xsd:int\" minOccurs=\"0\"/>\n" +
+                "                <xsd:element name=\"SSN\">\n" +
+                "                <xsd:simpleType>\n" +
+                "                <xsd:restriction base=\"xsd:token\">\n" +
+                "                    <xsd:pattern value=\"[0-9]{3}-[0-9]{2}-[0-9]{4}\"/>\n" +
+                "                </xsd:restriction>\n" +
+                "                </xsd:simpleType>\n" +
+                "                </xsd:element>\n" +
                 "            </xsd:sequence>\n" +
                 "        </xsd:complexType>\n" +
                 "    </xsd:element>\n" +
@@ -95,7 +102,7 @@ public class XmlValidator {
 	            validator.validate(xmlSource);
 	            List<String> errorMessages = errorHandler.getErrorMessages();
 	            if(errorMessages.size() > 0) {
-	            	System.out.println("Validation errors : \n" + errorMessages.stream().collect(Collectors.joining("\n")) );
+	            	System.	out.println("Validation errors : \n" + errorMessages.stream().collect(Collectors.joining("\n")) );
 	            	return false;
 	            }
 	            return true;
