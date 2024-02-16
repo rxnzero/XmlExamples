@@ -1,5 +1,7 @@
 package com.dhlee.xsd;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,26 +18,50 @@ import org.xml.sax.SAXParseException;
 
 public class XmlValidator {
     public static void main(String[] args) {
-        testData();
+    	testFile();
+//    	testData();        
     }
 
     public static void testFile() {
-        String xmlFile = "path/to/xml/file.xml";
-        String xsdFile = "path/to/xsd/schema.xsd";
-        boolean isValid = validate(xmlFile, xsdFile);
+        String xmlFile = "src/resources/sample.xml";
+        String xsdFile = "src/resources/sample.xsd";
+        boolean isValid = validate(xmlFile, xsdFile, false);
         System.out.println("Is the XML file valid? " + isValid);
     }
     
-    private static boolean validate(String xmlFile, String xsdFile) {
+    private static boolean validate(String xmlFile, String xsdFile, boolean isFullValidation) {
         try {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            
+            // Read and print XML file content
+            String xmlContent = readFileContent(xmlFile);
+            System.out.println("XML File Content:\n" + xmlContent);
+            // Read and print XSD file content
+            String xsdContent = readFileContent(xsdFile);
+            System.out.println("XSD File Content:\n" + xsdContent);
+            
+            Source source = new StreamSource(xmlFile);
             File schemaFile = new File(xsdFile);
             Schema schema = factory.newSchema(schemaFile);
+            
             Validator validator = schema.newValidator();
-            validator.setErrorHandler(new SimpleErrorHandler()); // Set a custom error handler
-            Source source = new StreamSource(xmlFile);
-            validator.validate(source);
-            return true;
+            if(isFullValidation) {
+            	SimpleErrorHandler errorHandler = new SimpleErrorHandler();
+            	errorHandler.setDebug(false);
+            	validator.setErrorHandler(errorHandler);
+            
+	            validator.validate(source);
+	            List<String> errorMessages = errorHandler.getErrorMessages();
+	            if(errorMessages.size() > 0) {
+	            	System.	out.println("Validation errors : \n" + errorMessages.stream().collect(Collectors.joining("\n")) );
+	            	return false;
+	            }
+	            return true;
+            }
+            else {
+            	validator.validate(source);
+            	return true;
+            }
         } catch (SAXParseException e) {
             System.out.println("Validation failed at line " + e.getLineNumber() + ", column " + e.getColumnNumber() + ": " + e.getMessage());
             return false;
@@ -47,7 +73,13 @@ public class XmlValidator {
             return false;
         }
     }
-        
+    
+    private static String readFileContent(String filePath) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        }
+    }
+    
     public static void testData() {
         String xmlString = "<root><element>value</element><elementInt>10s</elementInt><SSN>A23-12-1234</SSN></root>";
         String xsdString = "<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n" +
