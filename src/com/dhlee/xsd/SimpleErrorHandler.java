@@ -25,22 +25,35 @@ public class SimpleErrorHandler implements ErrorHandler {
 	}
 
 	public void warning(SAXParseException e) throws SAXException {
-        String errorMessage = "Warning: " + e.getMessage();
+		String errorMessage = printExceptionDetails("Warning", e);
 		if(debug) System.out.println(errorMessage);
         errorMessages.add(errorMessage);
         throw e;
     }
-
+	
+	private String printExceptionDetails(String severity, SAXParseException exception) {
+        String message = severity + " at " +
+                           "Line: " + exception.getLineNumber() + ", " +
+                           "Column: " + exception.getColumnNumber() + ", " +
+                           "Public ID: " + exception.getPublicId() + ", " +
+                           "System ID: " + exception.getSystemId() +
+                           ", getMessage - " + exception.getMessage();
+//        System.out.println(message);
+        return message;
+    }
+	
     public void error(SAXParseException e) throws SAXException {
-        String errorMessage = "Error at line " + e.getLineNumber() + ", column " + e.getColumnNumber() + ": " + e.getMessage();
-        if(debug) System.out.println(errorMessage);
+    	String errorMessage = printExceptionDetails("error", e);
+//    	String errorMessage = "Error at line " + e.getLineNumber() + ", column " + e.getColumnNumber() + ": " + e.getMessage();
+//        if(debug) System.out.println(errorMessage);
         errorMessages.add(errorMessage);
 //        throw e;
     }
 
     public void fatalError(SAXParseException e) throws SAXException {
-        String errorMessage = "Fatal error at line " + e.getLineNumber() + ", column " + e.getColumnNumber() + ": " + e.getMessage();
-        if(debug) System.out.println(errorMessage);
+    	String errorMessage = printExceptionDetails("fatalError", e);
+//    	String errorMessage = "Fatal error at line " + e.getLineNumber() + ", column " + e.getColumnNumber() + ": " + e.getMessage();
+//        if(debug) System.out.println(errorMessage);
         errorMessages.add(errorMessage);
 //        throw e;
     }

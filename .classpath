@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_172"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/xmlbeans-5.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/xmlbeans-5.1.1.jar" sourcepath="C:/Users/elink/AppData/Local/Temp/.org.sf.feeling.decompiler1688373103954/source/xmlbeans-5.1.1-sources-1688373104388.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-api-2.18.0.jar"/>
 	<classpathentry kind="lib" path="lib/codemodel-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-xjc-2.3.3-b02.jar"/>
